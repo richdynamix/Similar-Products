@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <Richdynamix_SimilarProducts>
+      <active>true</active>
+      <codePool>local</codePool>
+      <version>0.1.0</version>
+    </Richdynamix_SimilarProducts>
+  </modules>
+</config>

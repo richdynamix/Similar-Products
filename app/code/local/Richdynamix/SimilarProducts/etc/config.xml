@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <Richdynamix_SimilarProducts>
+      <version>0.1.0</version>
+    </Richdynamix_SimilarProducts>
+  </modules>
+<!--   <frontend>
+    <routers>
+      <review>
+        <args>
+          <modules>
+            <Richdynamix_SimilarProducts before="Mage_Review_ProductController">
+              Richdynamix_SimilarProducts_Frontend_Review_ProductController
+            </Richdynamix_SimilarProducts>
+          </modules>
+        </args>
+      </review>
+    </routers>
+  </frontend> -->
+  <global>
+    <helpers>
+      <similarproducts>
+        <class>Richdynamix_SimilarProducts_Helper</class>
+      </similarproducts>
+    </helpers>
+  	<blocks>
+  	  <similarproducts>
+  		<class>Richdynamix_SimilarProducts_Block</class>
+  	  </similarproducts>
+  			<catalog>
+  				<rewrite>
+  					<product_list_upsell>Richdynamix_SimilarProducts_Block_Catalog_Product_List_Upsell</product_list_upsell>
+  				</rewrite>
+  			</catalog>
+  	</blocks>
+  	<models>
+  	  <similarproducts>
+  		  <class>Richdynamix_SimilarProducts_Model</class>
+  		  <resourceModel>similarproducts_mysql4</resourceModel>
+  	  </similarproducts>
+  	</models>
+    <events>
+
+      <!-- Add Customer once they Login and process any guest actions in the session -->
+      <customer_login>
+        <observers>
+          <customer_login_handler>
+            <type>model</type>
+            <class>similarproducts/observer</class>
+            <method>addCustomer</method>
+          </customer_login_handler>
+        </observers>
+      </customer_login>      
+      
+      <!-- Log the product view to customer -->
+      <catalog_controller_product_view>
+        <observers>
+          <catalog_controller_product_view_handler>
+            <type>model</type>
+            <class>similarproducts/observer</class>
+            <method>productView</method>
+          </catalog_controller_product_view_handler>
+        </observers>
+      </catalog_controller_product_view>
+
+      <!-- Log product review and rating with PredictionIO -->
+      <review_save_after>
+        <observers>
+          <review_save_after_handler>
+            <type>model</type>
+            <class>similarproducts/observer</class>
+            <method>productRate</method> 
+          </review_save_after_handler>
+        </observers>
+      </review_save_after>
+
+      <!-- Log product conversion for each product in order -->
+      <checkout_type_onepage_save_order_after>
+          <observers>
+              <similarproducts_save_order_observer>
+                  <class>similarproducts/observer</class>
+                  <method>productSale</method>
+              </similarproducts_save_order_observer>
+          </observers>
+      </checkout_type_onepage_save_order_after>
+
+    </events>
+  </global>
+</config>
