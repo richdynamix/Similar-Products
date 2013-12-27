@@ -15,10 +15,22 @@ require_once 'abstract.php';
 class Richdynamix_Shell_Similarity extends Mage_Shell_Abstract
 {
 
+    /**
+     * Define the a list of stores to run
+     * @var array
+     */
     protected $_stores = array();
 
+    /**
+     * Store count for reporting
+     * @var int
+     */
     protected $_sCount = 0;
     
+    /**
+     * Define the helper object
+     * @var NULL
+     */
     protected $_helper;
 
     /**
@@ -40,14 +52,8 @@ class Richdynamix_Shell_Similarity extends Mage_Shell_Abstract
     protected $_actionsUrl = 'actions/u2i.json';
 
     /**
-     * API Endpoint for similarity engine.
-     * {engine} will be string replaced by the engine name
-     * you specify in the CMS configuration
-     * @var string
+     * Setup the run command with the right data to process
      */
-    protected $_engineUrl = 'engines/itemsim/{engine}/topn.json';
-
-
     public function __construct() {
         parent::__construct();
         
@@ -121,9 +127,8 @@ USAGE;
     }
 
     /**
-     * [_processStore description]
-     * @param  [type] $store [description]
-     * @return [type]        [description]
+     * Lets process each store sales
+     * @param  string $store Pass in the store to process
      */
     protected function _processStore($store) {
         $storeName = $store->getName();
@@ -154,9 +159,8 @@ USAGE;
     }
 
     /**
-     * [preparePost description]
-     * @param  [type] $orders [description]
-     * @return [type]         [description]
+     * Setup customers, products and actions
+     * @param  string $orders the order for given store
      */
     private function preparePost($orders) {
 
@@ -173,8 +177,8 @@ USAGE;
     }
 
     /**
-     * [_addCustomer description]
-     * @param [type] $customerId [description]
+     * Sets up cURL request paramaters for adding a customer
+     * @param int $customerId Customer ID of loggedin customer
      */
     private function _addCustomer($customerId) {
 
@@ -184,9 +188,10 @@ USAGE;
     }
 
     /**
-     * [_addItems description]
-     * @param [type] $products   [description]
-     * @param [type] $customerId [description]
+     * Sets up cURL request paramaters for adding a parent 
+     * item of ordered product (Since Upsells can only be shown on parents)
+     * @param int $productid  Product ID of purchased item
+     * @param int $customerId Customer ID of loggedin customer
      */
     private function _addItems($products, $customerId) {
 
@@ -214,9 +219,9 @@ USAGE;
     }
 
     /**
-     * [_addAction description]
-     * @param [type] $_productId [description]
-     * @param [type] $customerId [description]
+     * Sets up cURL request paramaters for adding a user-to-item action
+     * @param int $productid  Product ID of item to action
+     * @param int $customerId Customer ID of loggedin customer
      */
     private function _addAction($_productId, $customerId) {
 
@@ -229,10 +234,9 @@ USAGE;
     }
 
     /**
-     * [postCurl description]
-     * @param  [type] $url           [description]
-     * @param  [type] $fields_string [description]
-     * @return [type]                [description]
+     * Perform the cURL POST Request
+     * @param  string $url   URL of PredictionIO API 
+     * @param  string $fields_string Query params for POST data
      */
     private function postCurl($url, $fields_string) {
         //open connection
