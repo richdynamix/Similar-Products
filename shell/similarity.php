@@ -182,9 +182,9 @@ USAGE;
      */
     private function _addCustomer($customerId) {
 
-        $fields_string = 'pio_appkey='.$this->_key.'&';
+        $fields_string = 'pio_appkey='.$this->_helper->getEngineKey().'&';
         $fields_string .= 'pio_uid='.$customerId;
-        $this->postCurl($this->getApiHost().':'.$this->getApiPort().'/'.$this->_userUrl, $fields_string);
+        $this->postCurl($this->_helper->getApiHost().':'.$this->_helper->getApiPort().'/'.$this->_userUrl, $fields_string);
     }
 
     /**
@@ -209,10 +209,10 @@ USAGE;
             }
         }
 
-        $fields_string = 'pio_appkey='.$this->_key.'&';
+        $fields_string = 'pio_appkey='.$this->_helper->getEngineKey().'&';
         $fields_string .= 'pio_iid='.$_productId.'&';
         $fields_string .= 'pio_itypes=1';
-        $this->postCurl($this->getApiHost().':'.$this->getApiPort().'/'.$this->_itemsUrl, $fields_string);
+        $this->postCurl($this->_helper->getApiHost().':'.$this->_helper->getApiPort().'/'.$this->_itemsUrl, $fields_string);
 
         $this->_addAction($_productId, $customerId);
 
@@ -225,11 +225,11 @@ USAGE;
      */
     private function _addAction($_productId, $customerId) {
 
-        $fields_string = 'pio_appkey='.$this->_key.'&';
+        $fields_string = 'pio_appkey='.$this->_helper->getEngineKey().'&';
         $fields_string .= 'pio_uid='.$customerId.'&';
         $fields_string .= 'pio_iid='.$_productId.'&';
         $fields_string .= 'pio_action=conversion';
-        $this->postCurl($this->getApiHost().':'.$this->getApiPort().'/'.$this->_actionsUrl, $fields_string);        
+        $this->postCurl($this->_helper->getApiHost().':'.$this->_helper->getApiPort().'/'.$this->_actionsUrl, $fields_string);        
 
     }
 
