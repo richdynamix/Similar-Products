@@ -39,7 +39,7 @@ When a customer places as an order then the module will get the parent product o
 
 #### Guest Action Logging
 
-Sometimes customers don't login till they get to the checkout so we log the customers actions in the session to post to PreditionIO when the customer logs in.
+Sometimes customers don't login till they get to the checkout so we log the customers actions in the session to post to PredictionIO when the customer logs in.
 
 #### PredictionIO
 
