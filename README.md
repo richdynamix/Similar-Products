@@ -20,6 +20,7 @@ Must have an instance of PredictionIO server setup and ready to accept data. Ple
 * Product View Actions
 * Product Sale Actions
 * Guest Action Logging
+* Import Existing Sales
 
 #### Replacing Upsell Products
 
@@ -40,6 +41,14 @@ When a customer places as an order then the module will get the parent product o
 #### Guest Action Logging
 
 Sometimes customers don't login till they get to the checkout so we log the customers actions in the session to post to PredictionIO when the customer logs in.
+
+#### Import Existing Sales
+
+Using the shell script included you can import all exiting sales data i.e Customers, Products and the action of conversion to kick start your data feeds. Just run the following command from your web root- 
+
+``php shell/similarity.php --store``
+
+Where --store is comma seperated lists of store names to import from. If you don't supply `--store` then all stores in your Magento installation will be imported.
 
 #### PredictionIO
 
