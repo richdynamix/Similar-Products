@@ -19,6 +19,7 @@ Must have an instance of PredictionIO server setup and ready to accept data. Ple
 * Reverts to admin defined upsells when there is no data returned by PredictionIO
 * Product View Actions
 * Product Sale Actions
+* Product Review Actions
 * Guest Action Logging
 * Import Existing Sales
 
@@ -38,6 +39,10 @@ When a customer views a product page the module will make an API call to add the
 
 When a customer places as an order then the module will get the parent product of the purchased simple product if available and post its ID to PredictionIO as only parent products can show the upsells.
 
+#### Product Review Actions
+
+When a customer reviews a product the module will get the average rating from all available ratings then make an API call to add the product rating to the PredictionIO server as well as record the action of rate
+
 #### Guest Action Logging
 
 Sometimes customers don't login till they get to the checkout so we log the customers actions in the session to post to PredictionIO when the customer logs in.
@@ -46,9 +51,9 @@ Sometimes customers don't login till they get to the checkout so we log the cust
 
 Using the shell script included you can import all exiting sales data i.e Customers, Products and the action of conversion to kick start your data feeds. Just run the following command from your web root- 
 
-``php shell/similarity.php --store``
+``php shell/similarity.php --store store1,store2``
 
-Where --store is comma seperated lists of store names to import from. If you don't supply `--store` then all stores in your Magento installation will be imported.
+Where --store looks for a comma seperated list of store names to import from. If you don't supply `--store` then all stores in your Magento installation will be imported.
 
 #### PredictionIO
 
