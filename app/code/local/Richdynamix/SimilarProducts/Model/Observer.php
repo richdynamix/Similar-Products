@@ -33,24 +33,34 @@ class Richdynamix_SimilarProducts_Model_Observer
 	 * @param  string $action  Define the action to watch
 	 * @param  Mage_Catalog_Model_Product $product [description]
 	 */
-	public function logGuestActions($action, Mage_Catalog_Model_Product $product)
+	public function logGuestActions($action, Mage_Catalog_Model_Product $product, $rating = null)
 	{
-		// @TODO add logging of product ratings
 		
 		$guestActions = Mage::getSingleton('core/session')->getGuestActions();
 		
-		$actions = array();
 		if (isset($guestActions) && $guestActions != NULL) {
 			if ($action === 'view') {
 				array_push($guestActions['product_view'], $product->getId());
-				Mage::getSingleton('core/session')->setGuestActions($guestActions);
-			}	
-		} else {
-			if ($action === 'view') {
-				$actions['product_view'][] = $product->getId();	
 			}
-			Mage::getSingleton('core/session')->setGuestActions($actions);		
+			if ($action === 'rate') {
+				$guestActions['product_rate'][$product->getId()] = $rating;
+			}
+			Mage::getSingleton('core/session')->setGuestActions($guestActions);
+		} else {
+			switch ($action) {
+				case 'view':
+					$guestActions['product_view'][] = $product->getId();
+					break;
+				case 'rate':
+					$guestActions['product_rate'][$product->getId()] = $rating;
+					break;
+			}
+			Mage::getSingleton('core/session')->setGuestActions($guestActions);		
 		}
+
+		// Mage::getSingleton('core/session')->unsGuestActions();
+		// var_dump($guestActions);
+
 	}
 
 	/**
@@ -82,10 +92,19 @@ class Richdynamix_SimilarProducts_Model_Observer
 	{
 		if (isset($guestActions['product_view'])) {
 			foreach ($guestActions['product_view'] as $item) {
-				$this->_helper->_addAction($item, $customerId, 'view');
+				$product = Mage::getModel('catalog/product')->load($item);
+				$this->_helper->_addItem($product);
+				$this->_helper->_addAction($product->getId(), $customerId, 'view');
 			}
-			Mage::getSingleton('core/session')->unsGuestActions();
 		}
+		if (isset($guestActions['product_rate'])) {
+			foreach ($guestActions['product_rate'] as $product_id => $rating) {
+				$product = Mage::getModel('catalog/product')->load($product_id);
+				$this->_helper->_addItem($produproductct_id);
+				$this->_helper->_addAction($product_id, $customerId, 'rate', $rating);
+			}
+		}
+		Mage::getSingleton('core/session')->unsGuestActions();
 	}
 
 	/**
@@ -111,14 +130,26 @@ class Richdynamix_SimilarProducts_Model_Observer
 	 */
 	public function productRate(Varien_Event_Observer $observer)
 	{
-		if ($this->_helper->isEnabled() && Mage::getSingleton('customer/session')->isLoggedIn()) {
+		if ($this->_helper->isEnabled()) {
 			$customer = Mage::getSingleton('customer/session')->getCustomer();			
 			$product = Mage::registry('current_product');
-			
-			// @TODO get posted rating to pass to PredictionIO
-			$rating = '3';
 
-			$this->_helper->_addAction($product->getId(), $customer->getId(), 'rate', $rating);
+			$object = $observer->getEvent()->getObject();
+        	$data = $object->getData();
+
+        	$newSumRatings = 0;
+	        foreach($data['ratings'] as $r) {
+	            $value = $r % 5;
+	            $newSumRatings += ($value) ? $value : 5;
+	        }
+	        $rating = $newSumRatings/count($data['ratings']);
+
+		    if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+		    	$this->_helper->_addItem($product);
+				$this->_helper->_addAction($product->getId(), $customer->getId(), 'rate', $rating);
+			} else {
+				$this->logGuestActions('rate', Mage::registry('current_product'), $rating);
+			}
 		}
 	}
 
