@@ -1,6 +1,8 @@
 Similar Products for Magento
 =============
 
+# No longer maintained
+
 Magento Upsell Product Enhancement with PredictionIO
 
 ## Install
